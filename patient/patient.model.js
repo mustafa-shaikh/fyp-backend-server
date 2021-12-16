@@ -11,7 +11,7 @@ const schema = new Schema({
     city: {type: String, required:true, default: ""},
     linked_status: {type: String, required:true, default: "unlinked"},
     linked_with: {type: String, required:true, default: ""},
-    accountStatus: {type:String, required:true, default: "unapproved"},
+    accountStatus: {type:String, required:true, default: "Unauthorized"},
     acceptTerms: Boolean,
     role: { type: String, required: true },
     verificationToken: String,
