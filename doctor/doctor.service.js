@@ -25,7 +25,7 @@ module.exports = {
 async function authenticate({ email, password, ipAddress }) {
     const doctor = await db.Doctor.findOne({ email });
 
-    if (!doctor || !doctor.isVerified || !bcrypt.compareSync(password, doctor.passwordHash)) {
+    if (!doctor || !bcrypt.compareSync(password, doctor.passwordHash)) {
         throw 'Email or password is incorrect';
     }
 
