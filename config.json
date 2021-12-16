@@ -1,0 +1,13 @@
+﻿{
+    "connectionString": "mongodb://localhost/node-mongo-signup-verification-api",
+    "secret": "diasporasecretlaw",
+    "emailFrom": "mustafa@server.com",
+    "smtpOptions": {
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "auth": {
+            "user": "guadalupe.rogahn65@ethereal.email",
+            "pass": "FXcVjQfENy8BXR5CKw"
+        }
+    }
+}
