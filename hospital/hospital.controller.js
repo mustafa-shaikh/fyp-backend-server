@@ -4,21 +4,21 @@ const Joi = require('joi');
 const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize')
 const Role = require('_helpers/role');
-const accountService = require('./hospital.service');
+const hospitalService = require('./hospital.service');
 
 // routes
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
-router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
+router.post('/revoke-token', authorize(Role.Hospital), revokeTokenSchema, revokeToken);
 router.post('/register', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
-router.get('/', authorize(Role.Admin), getAll);
-router.get('/:id', authorize(), getById);
-router.post('/', authorize(Role.Admin), createSchema, create);
-router.put('/:id', authorize(), updateSchema, update);
+router.get('/', authorize(Role.Hospital), getAll);
+router.get('/:id', authorize(Role.Hospital), getById);
+router.post('/', authorize(Role.Hospital), createSchema, create);
+router.put('/:id', authorize(Role.Hospital), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
@@ -34,10 +34,10 @@ function authenticateSchema(req, res, next) {
 function authenticate(req, res, next) {
     const { email, password } = req.body;
     const ipAddress = req.ip;
-    accountService.authenticate({ email, password, ipAddress })
-        .then(({ refreshToken, ...account }) => {
+    hospitalService.authenticate({ email, password, ipAddress })
+    .then(({ refreshToken, ...hospital }) => {
             setTokenCookie(res, refreshToken);
-            res.json(account);
+            res.json(hospital);
         })
         .catch(next);
 }
@@ -45,10 +45,11 @@ function authenticate(req, res, next) {
 function refreshToken(req, res, next) {
     const token = req.cookies.refreshToken;
     const ipAddress = req.ip;
-    accountService.refreshToken({ token, ipAddress })
-        .then(({ refreshToken, ...account }) => {
-            setTokenCookie(res, refreshToken);
-            res.json(account);
+    
+    hospitalService.refreshToken({ token, ipAddress })
+    .then(({ refreshToken, ...hospital }) => {
+        setTokenCookie(res, refreshToken);
+        res.json(hospital);
         })
         .catch(next);
 }
@@ -67,19 +68,19 @@ function revokeToken(req, res, next) {
 
     if (!token) return res.status(400).json({ message: 'Token is required' });
 
-    // users can revoke their own tokens and admins can revoke any tokens
-    if (!req.user.ownsToken(token) && req.user.role !== Role.Admin) {
+    // users can revoke their own tokens and hospitals can revoke any tokens
+    if (!req.user.ownsToken(token) && req.user.role !== Role.Hospital) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    accountService.revokeToken({ token, ipAddress })
+    hospitalService.revokeToken({ token, ipAddress })
         .then(() => res.json({ message: 'Token revoked' }))
         .catch(next);
 }
 
 function registerSchema(req, res, next) {
     const schema = Joi.object({
-        title: Joi.string().required(),
+        type: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         email: Joi.string().email().required(),
@@ -91,7 +92,7 @@ function registerSchema(req, res, next) {
 }
 
 function register(req, res, next) {
-    accountService.register(req.body, req.get('origin'))
+    hospitalService.register(req.body, req.get('origin'))
         .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
         .catch(next);
 }
@@ -101,10 +102,11 @@ function verifyEmailSchema(req, res, next) {
         token: Joi.string().required()
     });
     validateRequest(req, next, schema);
+
 }
 
 function verifyEmail(req, res, next) {
-    accountService.verifyEmail(req.body)
+    hospitalService.verifyEmail(req.body)
         .then(() => res.json({ message: 'Verification successful, you can now login' }))
         .catch(next);
 }
@@ -117,7 +119,7 @@ function forgotPasswordSchema(req, res, next) {
 }
 
 function forgotPassword(req, res, next) {
-    accountService.forgotPassword(req.body, req.get('origin'))
+    hospitalService.forgotPassword(req.body, req.get('origin'))
         .then(() => res.json({ message: 'Please check your email for password reset instructions' }))
         .catch(next);
 }
@@ -130,7 +132,7 @@ function validateResetTokenSchema(req, res, next) {
 }
 
 function validateResetToken(req, res, next) {
-    accountService.validateResetToken(req.body)
+    hospitalService.validateResetToken(req.body)
         .then(() => res.json({ message: 'Token is valid' }))
         .catch(next);
 }
@@ -145,61 +147,60 @@ function resetPasswordSchema(req, res, next) {
 }
 
 function resetPassword(req, res, next) {
-    accountService.resetPassword(req.body)
+    hospitalService.resetPassword(req.body)
         .then(() => res.json({ message: 'Password reset successful, you can now login' }))
         .catch(next);
 }
 
 function getAll(req, res, next) {
-    accountService.getAll()
-        .then(accounts => res.json(accounts))
+    hospitalService.getAll()
+        .then(hospitals => res.json(hospitals))
         .catch(next);
 }
 
 function getById(req, res, next) {
-    // users can get their own account and admins can get any account
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+    // users can get their own hospital and hospitals can get any hospital
+    if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    accountService.getById(req.params.id)
-        .then(account => account ? res.json(account) : res.sendStatus(404))
+    hospitalService.getById(req.params.id)
+        .then(hospital => hospital ? res.json(hospital) : res.sendStatus(404))
         .catch(next);
 }
 
 function createSchema(req, res, next) {
     const schema = Joi.object({
-        title: Joi.string().required(),
+        type: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-        role: Joi.string().valid(Role.Admin, Role.User).required()
+        role: Joi.string().valid(Role.Hospital, Role.User).required()
     });
     validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
-    accountService.create(req.body)
-        .then(account => res.json(account))
+    hospitalService.create(req.body)
+        .then(hospital => res.json(hospital))
         .catch(next);
 }
 
 function updateSchema(req, res, next) {
     const schemaRules = {
-        title: Joi.string().empty(''),
+        // type: Joi.string().empty(''),
         firstName: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
-        accountStatus: Joi.string(),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
         confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
     };
 
-    // only admins can update role
-    if (req.user.role === Role.Admin) {
-        schemaRules.role = Joi.string().valid(Role.Admin, Role.User).empty('');
+    // only hospitals can update role
+    if (req.user.role === Role.Hospital) {
+        schemaRules.role = Joi.string().valid(Role.Hospital, Role.Hospital).empty('');
     }
 
     const schema = Joi.object(schemaRules).with('password', 'confirmPassword');
@@ -207,24 +208,26 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-    // users can update their own account and admins can update any account
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+    // users can update their own hospital and hospitals can update any hospital
+    if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    accountService.update(req.params.id, req.body)
-        .then(account => res.json(account))
+    
+
+    hospitalService.update(req.params.id, req.body)
+        .then(hospital => res.json(hospital))
         .catch(next);
 }
 
 function _delete(req, res, next) {
-    // users can delete their own account and admins can delete any account
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+    // users can delete their own hospital and hospitals can delete any hospital
+    if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    accountService.delete(req.params.id)
-        .then(() => res.json({ message: 'Account deleted successfully' }))
+    hospitalService.delete(req.params.id)
+        .then(() => res.json({ message: 'Hospital deleted successfully' }))
         .catch(next);
 }
 

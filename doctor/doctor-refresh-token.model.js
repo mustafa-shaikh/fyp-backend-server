@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    account: { type: Schema.Types.ObjectId, ref: 'Account' },
+    doctor: { type: Schema.Types.ObjectId, ref: 'Doctor' },
     token: String,
     expires: Date,
     created: { type: Date, default: Date.now },
