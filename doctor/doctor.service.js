@@ -1,4 +1,4 @@
-﻿const config = require('config.json');
+﻿const config = require('config.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
@@ -25,7 +25,7 @@ module.exports = {
 async function authenticate({ email, password, ipAddress }) {
     const doctor = await db.Doctor.findOne({ email });
 
-    if (!doctor || !bcrypt.compareSync(password, doctor.passwordHash)) {
+    if (!doctor || !doctor.isVerified || !bcrypt.compareSync(password, doctor.passwordHash)) {
         throw 'Email or password is incorrect';
     }
 
@@ -47,6 +47,7 @@ async function authenticate({ email, password, ipAddress }) {
 async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
     const { doctor } = refreshToken;
+
 
     // replace old refresh token with a new one and save
     const newRefreshToken = generateRefreshToken(doctor, ipAddress);
@@ -86,7 +87,7 @@ async function register(params, origin) {
     // create doctor object
     const doctor = new db.Doctor(params);
 
-    // first registered doctor is an admin
+    // first registered doctor is an doctor
     // const isFirstDoctor = (await db.Doctor.countDocuments({})) === 0;
     doctor.role = Role.Doctor;
     doctor.verificationToken = randomTokenString();
@@ -245,18 +246,18 @@ function randomTokenString() {
 }
 
 function basicDetails(doctor) {
-    const { id, title, firstName, lastName, doctorstatus, email, role, created, updated, isVerified } = doctor;
-    return { id, title, firstName, lastName, doctorstatus ,email, role, created, updated, isVerified };
+    const { id, title, firstName, lastName, doctorStatus, email, role, created, updated, isVerified } = doctor;
+    return { id, title, firstName, lastName, doctorStatus ,email, role, created, updated, isVerified };
 }
 
 async function sendVerificationEmail(doctor, origin) {
     let message;
     if (origin) {
-        const verifyUrl = `${origin}/doctor/verify-email?token=${doctor.verificationToken}`;
+        const verifyUrl = `${origin}/account/verify-email?token=${doctor.verificationToken}`;
         message = `<p>Please click the below link to verify your email address:</p>
                    <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
     } else {
-        message = `<p>Please use the below token to verify your email address with the <code>/doctor/verify-email</code> api route:</p>
+        message = `<p>Please use the below token to verify your email address with the <code>/account/verify-email</code> api route:</p>
                    <p><code>${doctor.verificationToken}</code></p>`;
     }
 
@@ -272,9 +273,9 @@ async function sendVerificationEmail(doctor, origin) {
 async function sendAlreadyRegisteredEmail(email, origin) {
     let message;
     if (origin) {
-        message = `<p>If you don't know your password please visit the <a href="${origin}/doctor/forgot-password">forgot password</a> page.</p>`;
+        message = `<p>If you don't know your password please visit the <a href="${origin}/account/forgot-password">forgot password</a> page.</p>`;
     } else {
-        message = `<p>If you don't know your password you can reset it via the <code>/doctor/forgot-password</code> api route.</p>`;
+        message = `<p>If you don't know your password you can reset it via the <code>/account/forgot-password</code> api route.</p>`;
     }
 
     await sendEmail({
@@ -289,11 +290,11 @@ async function sendAlreadyRegisteredEmail(email, origin) {
 async function sendPasswordResetEmail(doctor, origin) {
     let message;
     if (origin) {
-        const resetUrl = `${origin}/doctor/reset-password?token=${doctor.resetToken.token}`;
+        const resetUrl = `${origin}/account/reset-password?token=${doctor.resetToken.token}`;
         message = `<p>Please click the below link to reset your password, the link will be valid for 1 day:</p>
                    <p><a href="${resetUrl}">${resetUrl}</a></p>`;
     } else {
-        message = `<p>Please use the below token to reset your password with the <code>/doctor/reset-password</code> api route:</p>
+        message = `<p>Please use the below token to reset your password with the <code>/account/reset-password</code> api route:</p>
                    <p><code>${doctor.resetToken.token}</code></p>`;
     }
 
