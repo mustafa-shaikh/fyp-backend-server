@@ -13,12 +13,14 @@ router.post('/revoke-token', authorize(Role.Doctor), revokeTokenSchema, revokeTo
 router.post('/register', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
-router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
+router.put('/:id', authorize(Role.Doctor), updateSchema, update);
+
+
+router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.get('/', authorize(Role.Doctor), getAll);
 router.get('/:id', authorize(), getById);
 router.post('/', authorize(Role.Doctor), createSchema, create);
-router.put('/:id', authorize(Role.Doctor), updateSchema, update);
 router.delete('/:id', authorize(Role.Doctor), _delete);
 
 module.exports = router;
@@ -192,14 +194,10 @@ function updateSchema(req, res, next) {
         firstName: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
         email: Joi.string().email().empty(''),
+        city: Joi.string().empty(''),
         password: Joi.string().min(6).empty(''),
         confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
     };
-
-    // only doctors can update role
-    if (req.user.role === Role.Doctor) {
-        schemaRules.role = Joi.string().valid(Role.Doctor, Role.Doctor).empty('');
-    }
 
     const schema = Joi.object(schemaRules).with('password', 'confirmPassword');
     validateRequest(req, next, schema);
