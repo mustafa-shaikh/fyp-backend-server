@@ -246,8 +246,8 @@ function randomTokenString() {
 }
 
 function basicDetails(doctor) {
-    const { id, title, firstName, lastName, doctorStatus, email, role, created, updated, isVerified } = doctor;
-    return { id, title, firstName, lastName, doctorStatus ,email, role, created, updated, isVerified };
+    const { id, title, firstName, lastName, email,  doctorStatus, city, role, linked_status , linked_with , created, updated, isVerified } = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus , city, role, linked_status , linked_with , created, updated, isVerified };
 }
 
 async function sendVerificationEmail(doctor, origin) {
