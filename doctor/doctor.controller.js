@@ -43,7 +43,7 @@ function authenticate(req, res, next) {
 }
 
 function refreshToken(req, res, next) {
-    const token = req.cookies.refreshToken;
+    const token = req.cookies.dRefreshToken;
     const ipAddress = req.ip;
     doctorService.refreshToken({ token, ipAddress })
         .then(({ refreshToken, ...doctor }) => {
@@ -62,7 +62,7 @@ function revokeTokenSchema(req, res, next) {
 
 function revokeToken(req, res, next) {
     // accept token from request body or cookie
-    const token = req.body.token || req.cookies.refreshToken;
+    const token = req.body.token || req.cookies.dRefreshToken;
     const ipAddress = req.ip;
 
     if (!token) return res.status(400).json({ message: 'Token is required' });
@@ -79,7 +79,7 @@ function revokeToken(req, res, next) {
 
 function registerSchema(req, res, next) {
     const schema = Joi.object({
-        title: Joi.string().required(),
+        // title: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         email: Joi.string().email().required(),
@@ -235,5 +235,5 @@ function setTokenCookie(res, token) {
         httpOnly: true,
         expires: new Date(Date.now() + 7*24*60*60*1000)
     };
-    res.cookie('refreshToken', token, cookieOptions);
+    res.cookie('dRefreshToken', token, cookieOptions);
 }
