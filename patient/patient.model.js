@@ -11,7 +11,7 @@ const schema = new Schema({
     linked_status: {type: String, required:true, default: "unlinked"},
     linked_with: {type: String, required:true, default: ""},
     patientStatus: {type:String, required:true, default: "Unauthorized"},
-    acceptTerms: Boolean,
+    // acceptTerms: Boolean,
     role: { type: String, required: true },
     verificationToken: String,
     verified: Date,

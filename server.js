@@ -24,6 +24,8 @@ if (process.env.NODE_ENV === 'development') {
   }
 
 // api routes
+
+app.use('/check', require('./Model/controller'));
 app.use('/hospital', require('./hospital/hospital.controller'));
 app.use('/doctor', require('./doctor/doctor.controller'));
 app.use('/patient', require('./patient/patient.controller'));
