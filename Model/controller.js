@@ -21,7 +21,7 @@ function _getInfo(req, res, next) {
 function _getPred(req, res, next) {
     service._getPred(req.body)
         .then(data => {
-            res.send(data);
+            res.send({result:data});
         })
         .catch(next)
 }
