@@ -1,10 +1,10 @@
-﻿const config = require('config.js');
+﻿const {secret} = require('../config.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
-const sendEmail = require('_helpers/send-email');
-const db = require('_helpers/db');
-const Role = require('_helpers/role');
+const sendEmail = require('../_helpers/send-email');
+const db = require('../_helpers/db');
+const Role = require('../_helpers/role');
 
 module.exports = {
     authenticate,
@@ -227,7 +227,7 @@ function hash(password) {
 
 function generateJwtToken(patient) {
     // create a jwt token containing the patient id that expires in 15 minutes
-    return jwt.sign({ sub: patient.id, id: patient.id }, config.secret, { expiresIn: '15m' });
+    return jwt.sign({ sub: patient.id, id: patient.id }, secret, { expiresIn: '15m' });
 }
 
 function generateRefreshToken(patient, ipAddress) {

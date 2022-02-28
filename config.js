@@ -1,19 +1,29 @@
-﻿
-const dotenv = require('dotenv');
-dotenv.config();
+﻿const dotenv = require("dotenv");
+const path = require("path");
 
-
+dotenv.config({
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+});
 module.exports = {
-    MONGODB_URI: process.env.MONGODB_URI,
-    connectionString: process.env.CONNECTIONSTRING,
-    secret: process.env.SECRET,
-    emailFrom: "mustafa@fyp.com",
-    smtpOptions: {
-        host: "smtp.ethereal.email",
-        port: 587,
-        auth: {
-            user: "guadalupe.rogahn65@ethereal.email",
-            pass: "FXcVjQfENy8BXR5CKw"
-        }
-    }
-}
+  port: process.env.PORT || 3000,
+  morganEnv: process.env.MORGAN_ENV,
+  nodeEnv: process.env.NODE_ENV,
+
+  connectionString: process.env.CONNECTION_STRING,
+  secret: process.env.SECRET,
+
+
+  chainUsername: process.env.CHAIN_USERNAME,
+  chainPassword: process.env.CHAIN_PASSWORD,
+  chainUri: process.env.CHAIN_URI,
+
+  emailFrom: process.env.MAIL_FROM,
+  smtpOptions: {
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  },
+};

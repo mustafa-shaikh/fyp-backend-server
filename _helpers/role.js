@@ -1,5 +1,6 @@
 module.exports = {
     Hospital: 'Hospital',
     Doctor: 'Doctor',
-    Patient: 'Patient'
+    Patient: 'Patient',
+    Pharmacy: 'Pharmacy'
 }
