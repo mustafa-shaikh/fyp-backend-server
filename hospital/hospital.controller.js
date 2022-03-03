@@ -7,10 +7,10 @@ const Role = require('../_helpers/role');
 const hospitalService = require('./hospital.service');
 
 // routes
-router.post('/authenticate', authenticateSchema, authenticate);
+router.post('/signIn', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(Role.Hospital), revokeTokenSchema, revokeToken);
-router.post('/register', registerSchema, register);
+router.post('/signUp', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
@@ -80,13 +80,11 @@ function revokeToken(req, res, next) {
 
 function registerSchema(req, res, next) {
     const schema = Joi.object({
-        type: Joi.string().required(),
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
+        name: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-        acceptTerms: Joi.boolean().valid(true).required()
+        //acceptTerms: Joi.boolean().valid(true).required()
     });
     validateRequest(req, next, schema);
 }
