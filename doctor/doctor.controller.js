@@ -7,10 +7,10 @@ const Role = require('../_helpers/role');
 const doctorService = require('./doctor.service');
 
 // routes
-router.post('/authenticate', authenticateSchema, authenticate);
+router.post('/signIn', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(Role.Doctor), revokeTokenSchema, revokeToken);
-router.post('/register', registerSchema, register);
+router.post('/signUp', registerSchema, register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
@@ -87,7 +87,7 @@ function registerSchema(req, res, next) {
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-        acceptTerms: Joi.boolean().valid(true).required()
+        //acceptTerms: Joi.boolean().valid(true).required()
     });
     validateRequest(req, next, schema);
 }

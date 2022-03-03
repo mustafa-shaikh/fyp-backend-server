@@ -25,7 +25,7 @@ module.exports = {
 async function authenticate({ email, password, ipAddress }) {
     const doctor = await db.Doctor.findOne({ email });
 
-    if (!doctor || !doctor.isVerified || !bcrypt.compareSync(password, doctor.passwordHash)) {
+    if (!doctor || !bcrypt.compareSync(password, doctor.passwordHash)) {
         throw 'Email or password is incorrect';
     }
 
@@ -81,7 +81,7 @@ async function register(params, origin) {
     // validate
     if (await db.Doctor.findOne({ email: params.email })) {
         // send already registered error in email to prevent doctor enumeration
-        return await sendAlreadyRegisteredEmail(params.email, origin);
+        //return await sendAlreadyRegisteredEmail(params.email, origin);
     }
 
     // create doctor object
@@ -99,7 +99,7 @@ async function register(params, origin) {
     await doctor.save();
 
     // send email
-    await sendVerificationEmail(doctor, origin);
+    // await sendVerificationEmail(doctor, origin);
 }
 
 async function verifyEmail({ token }) {
