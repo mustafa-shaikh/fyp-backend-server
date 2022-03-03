@@ -17,6 +17,8 @@ module.exports = {
   chainPassword: process.env.CHAIN_PASSWORD,
   chainUri: process.env.CHAIN_URI,
 
+  modelUri: process.env.MODEL_URI,
+
   emailFrom: process.env.MAIL_FROM,
   smtpOptions: {
     host: process.env.MAIL_HOST,
