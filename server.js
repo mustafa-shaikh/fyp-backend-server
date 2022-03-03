@@ -27,7 +27,7 @@ if (morganEnv === "development") {
 
 // api routes
 
-app.use("/check", require("./Model/controller"));
+// app.use("/check", require("./Model/controller"));
 app.use("/hospital", require("./hospital/hospital.controller"));
 app.use("/pharmacy", require("./pharmacy/pharmacy.controller"));
 app.use("/doctor", require("./doctor/doctor.controller"));
