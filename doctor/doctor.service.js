@@ -1,4 +1,4 @@
-﻿const {secret} = require('../config.js');
+﻿const { secret } = require('../config.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
@@ -15,12 +15,46 @@ module.exports = {
     forgotPassword,
     validateResetToken,
     resetPassword,
+    linkToHospital,
     getAll,
     getById,
     create,
     update,
-    delete: _delete
+    delete: _delete,
 };
+
+async function linkToHospital(userId, params) {
+    const hospital = await db.Hospital.findById(params.hospitalId);
+
+    console.log("taha", hospital)
+    // validate (if email was changed)
+    // if (params.email && doctor.email !== params.email && await db.Doctor.findOne({ email: params.email })) {
+    //     throw 'Email "' + params.email + '" is already taken';
+    // }
+
+    // hash password if it was entered
+    // if (params.password) {
+    //     params.passwordHash = hash(params.password);
+    // }
+
+    // copy params to doctor and save
+    //Object.assign(hospital, params);
+    const temp = {
+        doctorProfile: userId,
+        linkStatus: params.linkStatus
+    }
+    hospital.requests.push(temp)
+    //doctor.updated = Date.now();
+    await hospital.save();
+
+    // return linkDetails(doctor);
+}
+
+function linkDetails(doctor) {
+    const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified } = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified };
+}
+
 
 async function authenticate({ email, password, ipAddress }) {
     const doctor = await db.Doctor.findOne({ email });
@@ -32,7 +66,7 @@ async function authenticate({ email, password, ipAddress }) {
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(doctor);
     const refreshToken = generateRefreshToken(doctor, ipAddress);
-    
+
     // save refresh token
     await refreshToken.save();
 
@@ -121,7 +155,7 @@ async function forgotPassword({ email }, origin) {
     // create reset token that expires after 24 hours
     doctor.resetToken = {
         token: randomTokenString(),
-        expires: new Date(Date.now() + 24*60*60*1000)
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
     };
     await doctor.save();
 
@@ -154,8 +188,8 @@ async function resetPassword({ token, password }) {
 }
 
 async function getAll() {
-    const doctors = await db.Doctor.find();
-    return doctors.map(x => basicDetails(x));
+    const hospitalList = await db.Hospital.find();
+    return hospitalList.map(x => hospitalDetails(x));
 }
 
 async function getById(id) {
@@ -236,7 +270,7 @@ function generateRefreshToken(doctor, ipAddress) {
     return new db.DoctorRefreshToken({
         doctor: doctor.id,
         token: randomTokenString(),
-        expires: new Date(Date.now() + 7*24*60*60*1000),
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         createdByIp: ipAddress
     });
 }
@@ -246,8 +280,13 @@ function randomTokenString() {
 }
 
 function basicDetails(doctor) {
-    const { id, title, firstName, lastName, email,  doctorStatus, city, role, linked_status , linked_with , created, updated, isVerified } = doctor;
-    return { id, title, firstName, lastName, email, doctorStatus , city, role, linked_status , linked_with , created, updated, isVerified };
+    const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified } = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified };
+}
+
+function hospitalDetails(hospital) {
+    const { id, name, hospitalStatus, hospitalAddress, city } = hospital;
+    return { id, name, hospitalStatus, hospitalAddress, city };
 }
 
 async function sendVerificationEmail(doctor, origin) {
