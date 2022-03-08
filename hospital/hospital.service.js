@@ -22,6 +22,40 @@ module.exports = {
     delete: _delete
 };
 
+async function linkToHospital(userId, params) {
+    const hospital = await db.Hospital.findById(params.hospitalId);
+
+    console.log("taha", hospital)
+    // validate (if email was changed)
+    // if (params.email && doctor.email !== params.email && await db.Doctor.findOne({ email: params.email })) {
+    //     throw 'Email "' + params.email + '" is already taken';
+    // }
+
+    // hash password if it was entered
+    // if (params.password) {
+    //     params.passwordHash = hash(params.password);
+    // }
+
+    // copy params to doctor and save
+    //Object.assign(hospital, params);
+    const temp = {
+        doctorProfile: userId,
+        linkStatus: params.linkStatus
+    }
+    hospital.requests.push(temp)
+    //doctor.updated = Date.now();
+    await hospital.save();
+
+    // return linkDetails(doctor);
+}
+
+function linkDetails(doctor) {
+    const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified } = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified };
+}
+
+
+
 async function authenticate({ email, password, ipAddress }) {
     const hospital = await db.Hospital.findOne({ email });
     
@@ -161,8 +195,8 @@ async function getAll() {
 }
 
 async function getById(id) {
-    const hospital = await getHospital(id);
-    return basicDetails(hospital);
+    const hospital = await db.Hospital.findById(id);
+    return hospital.requests;
 }
 
 async function create(params) {

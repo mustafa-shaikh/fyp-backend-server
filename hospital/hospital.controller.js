@@ -16,10 +16,11 @@ router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.get('/', authorize(Role.Hospital), getAll);
-router.get('/:id', authorize(Role.Hospital), getById);
+router.post('/linkedDoctors', getById);
 router.post('/', authorize(Role.Hospital), createSchema, create);
 router.put('/:id', authorize(Role.Hospital), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
+router.post('/getDoctorById', authorize(Role.Hospital), createSchema, create);
 
 module.exports = router;
 
@@ -158,11 +159,11 @@ function getAll(req, res, next) {
 
 function getById(req, res, next) {
     // users can get their own hospital and hospitals can get any hospital
-    if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    hospitalService.getById(req.params.id)
+    // if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
+    //     return res.status(401).json({ message: 'Unauthorized' });
+    // }
+    console.log(req.body);
+    hospitalService.getById(req.body.id)
         .then(hospital => hospital ? res.json(hospital) : res.sendStatus(404))
         .catch(next);
 }

@@ -11,6 +11,13 @@ const schema = new Schema({
     linked_status: {type: String, required:true, default: "unlinked"},
     linked_with: {type: String, required:true, default: "Nan"},
     hospitalStatus: {type:String, required:true, default: "authorized"},
+    hospitalAddress: {type:String, required:true, default: "NaN"},
+    requests:[
+        {
+            doctorProfile: { type: Schema.Types.ObjectId, ref: "Doctor" },
+            doctorName: { type: String, required: true, default:""},
+            linkStatus: { type: String,required:true, default : "active"}
+        }],
     //acceptTerms: Boolean,
     role: { type: String, required: true },
     verificationToken: String,

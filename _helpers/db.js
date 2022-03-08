@@ -10,6 +10,7 @@ mongoose.connect(connectionString, connectionOptions);
 mongoose.Promise = global.Promise;
 
 module.exports = {
+    Appointment: require('../general/appointment.model'),
     Patient: require('../patient/patient.model'),
     Doctor: require('../doctor/doctor.model'),
     Hospital: require('../hospital/hospital.model'),

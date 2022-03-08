@@ -15,10 +15,11 @@ router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.put('/:id', authorize(Role.Doctor), updateSchema, update);
+router.post('/linkToHospital', authorize(Role.Doctor), linkToHospitalSchema, linkToHospital);
 
 
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
-router.get('/', authorize(Role.Doctor), getAll);
+router.get('/hospitalList', authorize(Role.Doctor), getAll);
 router.get('/:id', authorize(), getById);
 router.post('/', authorize(Role.Doctor), createSchema, create);
 router.delete('/:id', authorize(Role.Doctor), _delete);
@@ -154,7 +155,7 @@ function resetPassword(req, res, next) {
 
 function getAll(req, res, next) {
     doctorService.getAll()
-        .then(doctors => res.json(doctors))
+        .then(hospitalList => res.json(hospitalList))
         .catch(next);
 }
 
@@ -214,7 +215,34 @@ function update(req, res, next) {
         .catch(next);
 }
 
+function linkToHospitalSchema(req, res, next) {
+    console.log("Taha1");
+    const schemaRules = {
+        hospitalId: Joi.string().required(),
+        linkStatus: Joi.string().required(),
+        doctorName: Joi.string().required()
+    };
+
+    console.log("Taha2");
+    const schema = Joi.object(schemaRules);
+    validateRequest(req, next, schema);
+}
+
+
+function linkToHospital(req, res, next) {
+    // console.log("Taha3")
+    // console.log("taha", req.user.id)
+    // users can update their own doctor and doctors can update any doctor
+    // if (req.params.id !== req.user.id && req.user.role !== Role.Doctor) {
+    //     return res.status(401).json({ message: 'Unauthorized' });
+    // }
+    doctorService.linkToHospital(req.user.id, req.body)
+        .then(() => res.json({ message: 'Link request sent to Hospital' }))
+        .catch(next);
+}
+
 function _delete(req, res, next) {
+    console.log("Taha found here")
     // users can delete their own doctor and doctors can delete any doctor
     if (req.params.id !== req.user.id && req.user.role !== Role.Doctor) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -231,7 +259,7 @@ function setTokenCookie(res, token) {
     // create cookie with refresh token that expires in 7 days
     const cookieOptions = {
         httpOnly: true,
-        expires: new Date(Date.now() + 7*24*60*60*1000)
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     };
     res.cookie('dRefreshToken', token, cookieOptions);
 }
