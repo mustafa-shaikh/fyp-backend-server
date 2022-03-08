@@ -15,6 +15,7 @@ const schema = new Schema({
     requests:[
         {
             doctorProfile: { type: Schema.Types.ObjectId, ref: "Doctor" },
+            doctorName: { type: String, required: true, default:""},
             linkStatus: { type: String,required:true, default : "active"}
         }],
     //acceptTerms: Boolean,

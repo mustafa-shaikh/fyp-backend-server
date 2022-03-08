@@ -216,17 +216,21 @@ function update(req, res, next) {
 }
 
 function linkToHospitalSchema(req, res, next) {
+    console.log("Taha1");
     const schemaRules = {
         hospitalId: Joi.string().required(),
-        linkStatus: Joi.string().required()
+        linkStatus: Joi.string().required(),
+        doctorName: Joi.string().required()
     };
 
+    console.log("Taha2");
     const schema = Joi.object(schemaRules);
     validateRequest(req, next, schema);
 }
 
 
 function linkToHospital(req, res, next) {
+    // console.log("Taha3")
     // console.log("taha", req.user.id)
     // users can update their own doctor and doctors can update any doctor
     // if (req.params.id !== req.user.id && req.user.role !== Role.Doctor) {
@@ -238,6 +242,7 @@ function linkToHospital(req, res, next) {
 }
 
 function _delete(req, res, next) {
+    console.log("Taha found here")
     // users can delete their own doctor and doctors can delete any doctor
     if (req.params.id !== req.user.id && req.user.role !== Role.Doctor) {
         return res.status(401).json({ message: 'Unauthorized' });
