@@ -21,11 +21,29 @@ router.post('/', authorize(Role.Hospital), createSchema, create);
 router.put('/:id', authorize(Role.Hospital), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 router.post('/getDoctorById', authorize(Role.Hospital), createSchema, create);
+router.post('/doctorList', authorize(Role.Hospital), getAllDoctor, linkDetails);
+router.post('/doctorDetails', authenticateSchema, authenticateDoctor);
 
 module.exports = router;
 
+function linkDetails(req, res, next) {
+    const ipAddress = req.ip;
+    hospitalService.authenticate({ipAddress })
+    .then(({ refreshToken, ...hospital }) => {
+            setTokenCookie(res, refreshToken);
+            res.json(hospital);
+        })
+        .catch(next);
+}
+
+function getAllDoctor(req, res, next) {
+    hospitalService.getAll()
+        .then(hospitals => res.json(hospitals))
+        .catch(next);
+}
+ 
 function authenticateSchema(req, res, next) {
-    const schema = Joi.object({
+    const schema= Joi.object({
         email: Joi.string().required(),
         password: Joi.string().required()
     });
@@ -39,6 +57,17 @@ function authenticate(req, res, next) {
     .then(({ refreshToken, ...hospital }) => {
             setTokenCookie(res, refreshToken);
             res.json(hospital);
+        })
+        .catch(next);
+}
+
+function authenticateDoctor(req, res, next) {
+    const { email, password } = req.body;
+    const ipAddress = req.ip;
+    doctorService.authenticate({ email, password, ipAddress })
+    .then(({ refreshToken, ...doctor }) => {
+            setTokenCookie(res, refreshToken);
+            res.json(doctor);
         })
         .catch(next);
 }
