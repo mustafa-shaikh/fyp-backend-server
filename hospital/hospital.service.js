@@ -17,26 +17,32 @@ module.exports = {
     validateResetToken,
     resetPassword,
     getAll,
+    getAllDoctors, //line 42 new listtt
     getById,
     create,
     update,
     delete: _delete,
     linkToHospital,
     linkDetails,
-    getAllDoctor,
+    getAllDoctor, //line 37 old
     doctorDetails,
     authenticateDoctor
 };
 
 function doctorDetails(doctor) {
-    const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified, schedule } = doctor;
-    return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified, schedule };
+    const { id, title, firstName, lastName, email, doctorStatus, city, role} = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role };
 }
 
 async function getAllDoctor() {
     const doctor = await db.Doctor.findById({id,doctorProfile});
     return profile(doctor);
 }
+
+// async function getAllDoctor() {
+//     const doctorList = await db.Doctor.find();
+//     return doctorList;
+// }
 
 async function linkToHospital(userId, params) {
     const hospital = await db.Hospital.findById(params.hospitalId);
@@ -229,6 +235,11 @@ async function resetPassword({ token, password }) {
 
 async function getAll() {
     const hospitals = await db.Hospital.find();
+    return hospitals.map(x => basicDetails(x));
+}
+
+async function getAllDoctors() {
+    const hospitals = await db.Doctor.find();
     return hospitals.map(x => basicDetails(x));
 }
 

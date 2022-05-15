@@ -88,7 +88,8 @@ module.exports = {
     validateResetToken,
     resetPassword,
     linkToHospital,
-    getAll,
+    getAllHospital,
+    getAllDoctor, //273
     getById,
     create,
     update,
@@ -264,9 +265,14 @@ async function resetPassword({ token, password }) {
     await doctor.save();
 }
 
-async function getAll() {
+async function getAllHospital() {
     const hospitalList = await db.Hospital.find();
     return hospitalList.map(x => hospitalDetails(x));
+}
+
+async function getAllDoctor() {
+    const doctorList = await db.Doctor.find();
+    return doctorList;
 }
 
 async function getById(id) {
