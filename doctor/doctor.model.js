@@ -13,10 +13,10 @@ const schema = new Schema({
     linked_with: {type: String, required:true, default: "NaN"},
     doctorStatus: {type:String, required:true, default: "unauthorized"},
     //acceptTerms: Boolean,
-    schedule:[
+    schedule:
         {
-            doctorTimings: { type: Schema.Types.ObjectId, ref: "Doctor" },
-        }],
+            //doctorTimings: { type: Schema.Types.ObjectId, ref: "Doctor" },
+        },
     role: { type: String, required: true },
     verificationToken: String,
     verified: Date,
