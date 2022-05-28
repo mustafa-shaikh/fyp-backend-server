@@ -16,10 +16,10 @@ router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.put('/:id', authorize(Role.Doctor), updateSchema, update);
 router.post('/linkToHospital', authorize(Role.Doctor), linkToHospitalSchema, linkToHospital);
-
-
+router.post('/linkDetails', authorize(Role.Doctor), linkToHospitalSchema, linkToHospital);
+router.get('/doctorList', authorize(Role.Doctor), getAllDoctor); //line 162 (function)
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
-router.get('/hospitalList', authorize(Role.Doctor), getAll);
+router.get('/hospitalList', authorize(Role.Doctor), getAllHospital);
 router.get('/:id', authorize(), getById);
 router.post('/', authorize(Role.Doctor), createSchema, create);
 router.delete('/:id', authorize(Role.Doctor), _delete);
@@ -153,10 +153,16 @@ function resetPassword(req, res, next) {
         .catch(next);
 }
 
-function getAll(req, res, next) {
-    doctorService.getAll()
+function getAllHospital(req, res, next) {
+    doctorService.getAllHospital()
         .then(hospitalList => res.json(hospitalList))
         .catch(next);
+}
+
+function getAllDoctor(req, res, next) {
+         doctorService.getAllDoctor()
+             .then(doctorList => res.json(doctorList))
+             .catch(next);
 }
 
 function getById(req, res, next) {

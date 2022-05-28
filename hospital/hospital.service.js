@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const sendEmail = require('../_helpers/send-email');
 const db = require('../_helpers/db');
 const Role = require('../_helpers/role');
+const { profile } = require('console');
 
 module.exports = {
     authenticate,
@@ -16,16 +17,37 @@ module.exports = {
     validateResetToken,
     resetPassword,
     getAll,
+    getAllDoctors, //line 42 new listtt
     getById,
     create,
     update,
-    delete: _delete
+    delete: _delete,
+    linkToHospital,
+    linkDetails,
+    getAllDoctor, //line 37 old
+    doctorDetails,
+    authenticateDoctor
 };
+
+function doctorDetails(doctor) {
+    const { id, title, firstName, lastName, email, doctorStatus, city, role} = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role };
+}
+
+async function getAllDoctor() {
+    const doctor = await db.Doctor.findById({id,doctorProfile});
+    return profile(doctor);
+}
+
+// async function getAllDoctor() {
+//     const doctorList = await db.Doctor.find();
+//     return doctorList;
+// }
 
 async function linkToHospital(userId, params) {
     const hospital = await db.Hospital.findById(params.hospitalId);
 
-    console.log("taha", hospital)
+    // console.log("taha", hospital)
     // validate (if email was changed)
     // if (params.email && doctor.email !== params.email && await db.Doctor.findOne({ email: params.email })) {
     //     throw 'Email "' + params.email + '" is already taken';
@@ -50,8 +72,8 @@ async function linkToHospital(userId, params) {
 }
 
 function linkDetails(doctor) {
-    const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified } = doctor;
-    return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified };
+    const { id, title, firstName, lastName, email, doctorStatus, city, role} = doctor;
+    return { id, title, firstName, lastName, email, doctorStatus, city, role };
 }
 
 
@@ -73,6 +95,28 @@ async function authenticate({ email, password, ipAddress }) {
     // return basic details and tokens
     return {
         ...basicDetails(hospital),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
+}
+
+async function authenticateDoctor({ email, password, ipAddress }) {
+    const doctor = await db.Doctor.findOne({ email });
+
+    if (!doctor || !bcrypt.compareSync(password, doctor.passwordHash)) {
+        throw 'Email or password is incorrect';
+    }
+
+    // authentication successful so generate jwt and refresh tokens
+    const jwtToken = generateJwtToken(doctor);
+    const refreshToken = generateRefreshToken(doctor, ipAddress);
+
+    // save refresh token
+    await refreshToken.save();
+
+    // return basic details and tokens
+    return {
+        ...doctorDetails(doctor),
         jwtToken,
         refreshToken: refreshToken.token
     };
@@ -194,7 +238,13 @@ async function getAll() {
     return hospitals.map(x => basicDetails(x));
 }
 
+async function getAllDoctors() {
+    const hospitals = await db.Doctor.find();
+    return hospitals.map(x => basicDetails(x));
+}
+
 async function getById(id) {
+    // console.log("taha");
     const hospital = await db.Hospital.findById(id);
     return hospital.requests;
 }

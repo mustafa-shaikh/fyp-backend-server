@@ -1,11 +1,4 @@
-﻿const { secret } = require('../config.js');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const crypto = require("crypto");
-const sendEmail = require('../_helpers/send-email');
-const db = require('../_helpers/db');
-const Role = require('../_helpers/role');
-const schedule = 
+﻿const schedule = 
     {
     monday:  {"slot1": "9:00 am - 9:30 am",
                 "slot2": "9:30 am - 10:00 am",
@@ -76,6 +69,13 @@ const schedule =
             "slot11": "02:30 pm - 03:00 pm",
     }
 }
+const { secret } = require('../config.js');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const crypto = require("crypto");
+const sendEmail = require('../_helpers/send-email');
+const db = require('../_helpers/db');
+const Role = require('../_helpers/role');
 
 
 module.exports = {
@@ -88,17 +88,19 @@ module.exports = {
     validateResetToken,
     resetPassword,
     linkToHospital,
-    getAll,
+    getAllHospital,
+    getAllDoctor, //273
     getById,
     create,
     update,
     delete: _delete,
+    linkDetails,
 };
 
 async function linkToHospital(userId, params) {
-    console.log("Taha at doc service");
+    //console.log("Taha at doc service");
     const hospital = await db.Hospital.findById(params.hospitalId);
-    console.log("taha", params.doctorName)
+    // console.log("taha", params.doctorName)
 
     // validate (if email was changed)
     // if (params.email && doctor.email !== params.email && await db.Doctor.findOne({ email: params.email })) {
@@ -263,9 +265,14 @@ async function resetPassword({ token, password }) {
     await doctor.save();
 }
 
-async function getAll() {
+async function getAllHospital() {
     const hospitalList = await db.Hospital.find();
     return hospitalList.map(x => hospitalDetails(x));
+}
+
+async function getAllDoctor() {
+    const doctorList = await db.Doctor.find();
+    return doctorList;
 }
 
 async function getById(id) {

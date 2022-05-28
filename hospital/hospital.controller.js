@@ -5,6 +5,7 @@ const validateRequest = require('../_middleware/validate-request');
 const authorize = require('../_middleware/authorize')
 const Role = require('../_helpers/role');
 const hospitalService = require('./hospital.service');
+const { doctorDetails } = require('./hospital.service');
 
 // routes
 router.post('/signIn', authenticateSchema, authenticate);
@@ -16,29 +17,68 @@ router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.get('/', authorize(Role.Hospital), getAll);
+//router.get('/doctorList', authorize(Role.Doctor), getAllDoctor); //line 56 new function
 router.post('/linkedDoctors', getById);
 router.post('/', authorize(Role.Hospital), createSchema, create);
 router.put('/:id', authorize(Role.Hospital), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 router.post('/getDoctorById', authorize(Role.Hospital), createSchema, create);
+router.get('/doctorList', authorize(Role.Hospital), getAllDoctors, linkDetails); //line 42 old func
+router.post('/doctorDetails', authenticateSchema, authenticateDoctor, doctorDetails);
 
 module.exports = router;
 
+function linkDetails(req, res, next) {
+    //console.log("taha details1")
+    const ipAddress = req.ip;
+    hospitalService.authenticate({ipAddress })
+    .then(({ refreshToken, ...hospital }) => {
+            setTokenCookie(res, refreshToken);
+            res.json(hospital);
+        })
+        .catch(next);
+}
+
+function getAllDoctor(req, res, next) {
+    hospitalService.getAll()
+        .then(hospitals => res.json(hospitals))
+        .catch(next);
+}
+ 
 function authenticateSchema(req, res, next) {
-    const schema = Joi.object({
+    const schema= Joi.object({
         email: Joi.string().required(),
         password: Joi.string().required()
     });
     validateRequest(req, next, schema);
 }
 
+// function getAllDoctor(req, res, next) {
+//     doctorService.getAllDoctor()
+//         .then(doctorList => res.json(doctorList))
+//         .catch(next);
+// }
+
 function authenticate(req, res, next) {
     const { email, password } = req.body;
     const ipAddress = req.ip;
+    // console.log("Reached here")
     hospitalService.authenticate({ email, password, ipAddress })
     .then(({ refreshToken, ...hospital }) => {
             setTokenCookie(res, refreshToken);
             res.json(hospital);
+        })
+        .catch(next);
+}
+
+function authenticateDoctor(req, res, next) {
+    const { email, password } = req.body;
+    const ipAddress = req.ip;
+    // console.log("authenticating")
+    doctorService.authenticateDoctor({ email, password, ipAddress })
+    .then(({ refreshToken, ...doctor }) => {
+            setTokenCookie(res, refreshToken);
+            res.json(doctor);
         })
         .catch(next);
 }
@@ -165,6 +205,17 @@ function getById(req, res, next) {
     console.log(req.body);
     hospitalService.getById(req.body.id)
         .then(hospital => hospital ? res.json(hospital) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getAllDoctors(req, res, next) {
+    // users can get their own hospital and hospitals can get any hospital
+    // if (req.params.id !== req.user.id && req.user.role !== Role.Hospital) {
+    //     return res.status(401).json({ message: 'Unauthorized' });
+    // }
+    console.log(req.body);
+    hospitalService.getAllDoctors()
+        .then(doctors => doctors ? res.json(doctors) : res.sendStatus(404))
         .catch(next);
 }
 
