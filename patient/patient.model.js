@@ -1,4 +1,4 @@
-const { string } = require('joi');
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -7,12 +7,13 @@ const schema = new Schema({
     passwordHash: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    city: {type: String, required:true, default: ""},
-    linked_status: {type: String, required:true, default: "unlinked"},
-    linked_with: {type: String, required:true, default: ""},
-    patientStatus: {type:String, required:true, default: "Unauthorized"},
+    address: { type: String, default:"NaN"},
+    phone: { type: String, default:"1234-5678910" },
+    imageUrl: { type: String, required: true , default:'https://www.pinclipart.com/picdir/middle/209-2098523_individuals-person-icon-circle-png-clipart.png' },
+    city: {type: String, default: "NaN"},
+    patientStatus: {type:String, required:true, default: "unauthorized"},
     // acceptTerms: Boolean,
-    role: { type: String, required: true },
+    role: { type: String, required: true,  default: "Patient" },
     verificationToken: String,
     verified: Date,
     resetToken: {

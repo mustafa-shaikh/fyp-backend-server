@@ -12,10 +12,12 @@ module.exports = {
   connectionString: process.env.CONNECTION_STRING,
   secret: process.env.SECRET,
 
-
   chainUsername: process.env.CHAIN_USERNAME,
   chainPassword: process.env.CHAIN_PASSWORD,
   chainUri: process.env.CHAIN_URI,
+  chainStatus: process.env.CHAIN_STATUS
+    ? process.env.CHAIN_STATUS
+    : "disconnected",
 
   modelUri: process.env.MODEL_URI,
 
