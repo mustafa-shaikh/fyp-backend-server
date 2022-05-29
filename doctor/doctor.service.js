@@ -1,72 +1,73 @@
-﻿const schedule = 
-    {
-    monday:  {"slot1": "9:00 am - 9:30 am",
-                "slot2": "9:30 am - 10:00 am",
-                "slot3": "10:00 am - 10:30 am",
-                "slot4": "10:30 am - 11:00 am",
-                "slot5": "11:00 am - 11:30 am",
-                "slot6": "11:30 am - 12:00 pm",
-                "slot7": "12:00 pm - 12:30 pm",
-                "slot8": "12:30 pm - 01:00 pm",
-                "slot9": "01:30 pm - 02:00 pm",
-                "slot10": "02:00 pm - 02:30 pm",
-                "slot11": "02:30 pm - 03:00 pm",
-            },
+﻿const schedule =
+{
+    monday: {
+        "slot1": "9:00 am - 9:30 am",
+        "slot2": "9:30 am - 10:00 am",
+        "slot3": "10:00 am - 10:30 am",
+        "slot4": "10:30 am - 11:00 am",
+        "slot5": "11:00 am - 11:30 am",
+        "slot6": "11:30 am - 12:00 pm",
+        "slot7": "12:00 pm - 12:30 pm",
+        "slot8": "12:30 pm - 01:00 pm",
+        "slot9": "01:30 pm - 02:00 pm",
+        "slot10": "02:00 pm - 02:30 pm",
+        "slot11": "02:30 pm - 03:00 pm",
+    },
 
-   tuesday: {
-                "slot1": "9:00 am - 9:30 am",
-                "slot2": "9:30 am - 10:00 am",
-                "slot3": "10:00 am - 10:30 am",
-                "slot4": "10:30 am - 11:00 am",
-                "slot5": "11:00 am - 11:30 am",
-                "slot6": "11:30 am - 12:00 pm",
-                "slot7": "12:00 pm - 12:30 pm",
-                "slot8": "12:30 pm - 01:00 pm",
-                "slot9": "01:30 pm - 02:00 pm",
-                "slot10": "02:00 pm - 02:30 pm",
-                "slot11": "02:30 pm - 03:00 pm",
+    tuesday: {
+        "slot1": "9:00 am - 9:30 am",
+        "slot2": "9:30 am - 10:00 am",
+        "slot3": "10:00 am - 10:30 am",
+        "slot4": "10:30 am - 11:00 am",
+        "slot5": "11:00 am - 11:30 am",
+        "slot6": "11:30 am - 12:00 pm",
+        "slot7": "12:00 pm - 12:30 pm",
+        "slot8": "12:30 pm - 01:00 pm",
+        "slot9": "01:30 pm - 02:00 pm",
+        "slot10": "02:00 pm - 02:30 pm",
+        "slot11": "02:30 pm - 03:00 pm",
     },
 
     wednesday: {
-            "slot1": "9:00 am - 9:30 am",
-            "slot2": "9:30 am - 10:00 am",
-            "slot3": "10:00 am - 10:30 am",
-            "slot4": "10:30 am - 11:00 am",
-            "slot5": "11:00 am - 11:30 am",
-            "slot6": "11:30 am - 12:00 pm",
-            "slot7": "12:00 pm - 12:30 pm",
-            "slot8": "12:30 pm - 01:00 pm",
-            "slot9": "01:30 pm - 02:00 pm",
-            "slot10": "02:00 pm - 02:30 pm",
-            "slot11": "02:30 pm - 03:00 pm",
+        "slot1": "9:00 am - 9:30 am",
+        "slot2": "9:30 am - 10:00 am",
+        "slot3": "10:00 am - 10:30 am",
+        "slot4": "10:30 am - 11:00 am",
+        "slot5": "11:00 am - 11:30 am",
+        "slot6": "11:30 am - 12:00 pm",
+        "slot7": "12:00 pm - 12:30 pm",
+        "slot8": "12:30 pm - 01:00 pm",
+        "slot9": "01:30 pm - 02:00 pm",
+        "slot10": "02:00 pm - 02:30 pm",
+        "slot11": "02:30 pm - 03:00 pm",
     },
 
-    thursday:{
-            "slot1": "9:00 am - 9:30 am",
-            "slot2": "9:30 am - 10:00 am",
-            "slot3": "10:00 am - 10:30 am",
-            "slot4": "10:30 am - 11:00 am",
-            "slot5": "11:00 am - 11:30 am",
-            "slot6": "11:30 am - 12:00 pm",
-            "slot7": "12:00 pm - 12:30 pm",
-            "slot8": "12:30 pm - 01:00 pm",
-            "slot9": "01:30 pm - 02:00 pm",
-            "slot10": "02:00 pm - 02:30 pm",
-            "slot11": "02:30 pm - 03:00 pm",
+    thursday: {
+        "slot1": "9:00 am - 9:30 am",
+        "slot2": "9:30 am - 10:00 am",
+        "slot3": "10:00 am - 10:30 am",
+        "slot4": "10:30 am - 11:00 am",
+        "slot5": "11:00 am - 11:30 am",
+        "slot6": "11:30 am - 12:00 pm",
+        "slot7": "12:00 pm - 12:30 pm",
+        "slot8": "12:30 pm - 01:00 pm",
+        "slot9": "01:30 pm - 02:00 pm",
+        "slot10": "02:00 pm - 02:30 pm",
+        "slot11": "02:30 pm - 03:00 pm",
     },
 
-    friday:{
-            "slot1": "9:00 am - 9:30 am",
-            "slot2": "9:30 am - 10:00 am",
-            "slot3": "10:00 am - 10:30 am",
-            "slot4": "10:30 am - 11:00 am",
-            "slot5": "11:00 am - 11:30 am",
-            "slot6": "11:30 am - 12:00 pm",
-            "slot7": "12:00 pm - 12:30 pm",
-            "slot8": "12:30 pm - 01:00 pm",
-            "slot9": "01:30 pm - 02:00 pm",
-            "slot10": "02:00 pm - 02:30 pm",
-            "slot11": "02:30 pm - 03:00 pm",
+    friday: {
+        "slot1": "9:00 am - 9:30 am",
+        "slot2": "9:30 am - 10:00 am",
+        "slot3": "10:00 am - 10:30 am",
+        "slot4": "10:30 am - 11:00 am",
+        "slot5": "11:00 am - 11:30 am",
+        "slot6": "11:30 am - 12:00 pm",
+        "slot7": "12:00 pm - 12:30 pm",
+        "slot8": "12:30 pm - 01:00 pm",
+        "slot9": "01:30 pm - 02:00 pm",
+        "slot10": "02:00 pm - 02:30 pm",
+        "slot11": "02:30 pm - 03:00 pm",
     }
 }
 const { secret } = require('../config.js');
@@ -119,7 +120,7 @@ async function linkToHospital(userId, params) {
         linkStatus: params.linkStatus,
         doctorName: params.doctorName
     }
-    
+
     hospital.requests.push(temp)
     //doctor.updated = Date.now();
     await hospital.save();
@@ -206,11 +207,11 @@ async function register(params, origin) {
 
     // hash password
     doctor.passwordHash = hash(params.password);
-    doctor.schedule = JSON.stringify(schedule)
+    doctor.schedule = schedule;
     // save doctor
     await doctor.save();
     console.log(doctor);
-    
+
     // send email
     // await sendVerificationEmail(doctor, origin);
 }
