@@ -5,6 +5,7 @@ const validateRequest = require('../_middleware/validate-request');
 const authorize = require('../_middleware/authorize')
 const Role = require('../_helpers/role');
 const hospitalService = require('./hospital.service');
+const doctorService = require('../doctor/doctor.service');
 const { doctorDetails } = require('./hospital.service');
 
 // routes
@@ -53,11 +54,11 @@ function authenticateSchema(req, res, next) {
     validateRequest(req, next, schema);
 }
 
-// function getAllDoctor(req, res, next) {
-//     doctorService.getAllDoctor()
-//         .then(doctorList => res.json(doctorList))
-//         .catch(next);
-// }
+function getAllDoctor(req, res, next) {
+    doctorService.getAllDoctor()
+        .then(doctorList => res.json(doctorList))
+        .catch(next);
+}
 
 function authenticate(req, res, next) {
     const { email, password } = req.body;
@@ -75,7 +76,7 @@ function authenticateDoctor(req, res, next) {
     const { email, password } = req.body;
     const ipAddress = req.ip;
     // console.log("authenticating")
-    doctorService.authenticateDoctor({ email, password, ipAddress })
+    doctorService.authenticate({ email, password, ipAddress })
     .then(({ refreshToken, ...doctor }) => {
             setTokenCookie(res, refreshToken);
             res.json(doctor);

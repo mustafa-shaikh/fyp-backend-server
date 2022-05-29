@@ -144,7 +144,7 @@ async function authenticate({ email, password, ipAddress }) {
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(doctor);
     const refreshToken = generateRefreshToken(doctor, ipAddress);
-
+    console.log("%j", schedule);
     // save refresh token
     await refreshToken.save();
 
@@ -201,6 +201,7 @@ async function register(params, origin) {
 
     // first registered doctor is an doctor
     // const isFirstDoctor = (await db.Doctor.countDocuments({})) === 0;
+    doctor.schedule = JSON.stringify(schedule);
     doctor.role = Role.Doctor;
     doctor.verificationToken = randomTokenString();
 
@@ -365,6 +366,7 @@ function randomTokenString() {
 
 function basicDetails(doctor) {
     const { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified, schedule } = doctor;
+    console.log("%j", schedule);
     return { id, title, firstName, lastName, email, doctorStatus, city, role, linked_status, linked_with, created, updated, isVerified, schedule };
 }
 
