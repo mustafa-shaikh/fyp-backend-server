@@ -25,9 +25,16 @@ router.put('/:id', authorize(Role.Hospital), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 router.post('/getDoctorById', authorize(Role.Hospital), createSchema, create);
 router.get('/doctorList', authorize(Role.Hospital), getAllDoctors, linkDetails); //line 42 old func
-router.post('/doctorDetails', authenticateSchema, authenticateDoctor, doctorDetails);
+router.post('/doctorDetails', authorize(Role.Hospital), getDoctorDetails, doctorDetails); //updated new single detail
+//router.get('/doctorDetails', authorize(Role.Hospital),doctorDetails);
 
 module.exports = router;
+
+function getDoctorDetails(req, res, next) {
+    doctorService.getById(req.body.id)
+        .then(doctor => res.json(doctor))
+        .catch(next);
+}
 
 function linkDetails(req, res, next) {
     //console.log("taha details1")
@@ -52,7 +59,7 @@ function authenticateSchema(req, res, next) {
         password: Joi.string().required()
     });
     validateRequest(req, next, schema);
-}
+} 
 
 function getAllDoctor(req, res, next) {
     doctorService.getAllDoctor()
