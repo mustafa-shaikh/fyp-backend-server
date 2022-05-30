@@ -24,6 +24,7 @@ router.get("/cases/:id", getAllCases); //List of Cases
 router.get("/hospital/:id", getCaseById); //List of Cases
 
 router.post("/create-appointment", appointmentSchema, createAppointment);
+router.post("/send-report", sendReport);
 
 // router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken); // not necessary
 router.delete("/:id", authorize(), _delete);
@@ -226,6 +227,15 @@ function createAppointment(req, res, next) {
     .createAppointment(req.body)
     .then((patient) => res.json(patient))
     .catch(next);
+}
+
+function sendReport(req, res, next) {
+  console.log("jeeyo");
+  res.json("thanks")
+  // patientService
+  //   .createAppointment(req.body)
+  //   .then((patient) => res.json(patient))
+  //   .catch(next);
 }
 
 
