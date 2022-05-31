@@ -23,8 +23,25 @@ router.get('/hospitalList', authorize(Role.Doctor), getAllHospital);
 router.get('/:id', authorize(), getById);
 router.post('/', authorize(Role.Doctor), createSchema, create);
 router.delete('/:id', authorize(Role.Doctor), _delete);
+router.post('/patientDetails',  getPatientDetails); //authorize(Role.Doctor)
+router.post('/patientDetails',  getPatientDetails); //authorize(Role.Doctor)
+router.post('/patientDetails',  getPatientDetails); //authorize(Role.Doctor)
 
 module.exports = router;
+
+function getPatientDetails(req, res, next) {
+    // users can get their own doctor and doctors can get any doctor
+    console.log(req.body)
+    // if (req.params.id !== req.doctor.id && appointmentStatus !== "false" && appointmentView !== "true") {
+        //     return res.status(401).json({ message: 'Unauthorized' });
+        // }
+        
+        
+        doctorService.getPatientDetails(req.body.id)
+        .then(patient => patient ? res.json(patient) : res.sendStatus(404))
+        .catch(next);
+}
+
 
 function authenticateSchema(req, res, next) {
     const schema = Joi.object({
