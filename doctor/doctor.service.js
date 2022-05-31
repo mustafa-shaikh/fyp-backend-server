@@ -96,7 +96,26 @@ module.exports = {
     update,
     delete: _delete,
     linkDetails,
+    getPatientDetails,
 };
+
+
+async function getPatientDetails(id) {
+    const patient = await db.Appointment.find({ doctorId : id, appointmentStatus : false, appointmentView : true }).populate("patientId", [
+      "email",
+      "firstName",
+      "lastName",
+      "city",
+      "phone",
+      "imageUrl",
+      
+    ]);
+
+    const { email,firstName,lastName, city, phone, imageUrl} = patient[0].patientId;
+
+    return {  email,firstName,lastName, city, phone, imageUrl, appointmentView: patient[0].appointmentView, appointmentStatus: patient[0].appointmentStatus };
+  }
+
 
 async function linkToHospital(userId, params) {
     //console.log("Taha at doc service");
