@@ -24,6 +24,7 @@ module.exports = {
   getAllCases,
   getCaseById,
   createAppointment,
+  sendReport,
 
   validateResetToken, /// necessary
   getAllHospitals,
@@ -221,8 +222,54 @@ async function createAppointment(params) {
   const newAppointment = new db.Appointment(params);
   // save patient
   await newAppointment.save();
-
   return appointmentDetails(newAppointment);
+}
+
+const reports = [
+
+  {
+    date: "2022-03-01",
+    testName: "CREATINE",
+    testResult: "4.39",
+    normalRange0: "0.9",
+    normalRange1: "1.3",
+    upperRange: "5",
+    lowerRange: ".5",
+  }
+  ,
+  {
+    date: "2022-03-01",
+    testName: "CALCIUM",
+    testResult: "5.6",
+    normalRange0: "8.6",
+    normalRange1: "10.2",
+    upperRange: "15",
+    lowerRange: "5",
+  }
+]
+
+
+
+async function sendReport(id, params) {
+  let res;
+  const patient = await db.Patient.findById(id);
+  if (params == "report1.pdf") {
+    res = reports[0];
+  }
+  else if (params == "report2.pdf") {
+    res = reports[1];
+  }
+  // else {
+  //   res = { error: "Error Reading File" }
+  // }
+
+  let dbReport = patient.reports;
+  dbReport.push(res);
+
+  patient.reports = dbReport;
+  await patient.save();
+
+  return basicDetails(patient);
 }
 
 async function updateCase(id, params) {
@@ -385,6 +432,7 @@ function basicDetails(patient) {
     address,
     city,
     imageUrl,
+    reports,
     role,
     created,
     updated,
