@@ -5,30 +5,8 @@ const validateRequest = require("../_middleware/validate-request");
 const authorize = require("../_middleware/authorize");
 const Role = require("../_helpers/role");
 const patientService = require("./patient.service");
-const fs = require('fs');
-const multer = require("multer");
-const pdfParse = require('pdf-parse');
 
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     let dir = `/tmp/myuploads/`; // specify the path you want to store file
-//     //check if file path exists or create the directory
-//     fs.access(dir, function (error) {
-//       if (error) {
-//         console.log("Directory does not exist.");
-//         return fs.mkdir(dir, error => cb(error, dir));
-//       } else {
-//         console.log("Directory exists.");
-//         return cb(null, dir);
-//       }
-//     });
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + "-" + file.originalname); // added Date.now() so that name will be unique
-//   }
-// });
-// const uploadFiles = multer({ storage: storage });
 
 // routes
 router.post("/register", registerSchema, register);
@@ -265,46 +243,6 @@ function sendReport(req, res, next) {
     .catch(next);
 }
 
-
-// uploadFiles.single("file");
-
-
-// pdfParse(req.file).then(function (data) {
-
-//   // number of pages
-//   console.log(data.numpages);
-//   // number of rendered pages
-//   console.log(data.numrender);
-//   // PDF info
-//   console.log(data.info);
-//   // PDF metadata
-//   console.log(data.metadata);
-//   // PDF.js version
-//   // check https://mozilla.github.io/pdf.js/getting_started/
-//   console.log(data.version);
-//   // PDF text
-//   console.log(data.text);
-
-// });
-
-
-// function createSchema(req, res, next) {
-//     const schema = Joi.object({
-//         subject: Joi.string().required(),
-//         type: Joi.string().required(),
-//         message: Joi.string().required(),
-//         password: Joi.string().min(6).required(),
-//         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-//         role: Joi.string().valid(Role.Patient, Role.User).required()
-//     });
-//     validateRequest(req, next, schema);
-// }
-
-// function create(req, res, next) {
-//     patientService.create(req.body)
-//         .then(patient => res.json(patient))
-//         .catch(next);
-// }
 
 function caseSchema(req, res, next) {
   //temp created in body
