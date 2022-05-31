@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     time: { type: String, unique: true, required: true },
-    patientId: { type: String, required: true },
-    doctorId: { type: String, required: true },
+    patientId: { type: Schema.Types.ObjectId, ref: "Patient" },
+    doctorId: { type: Schema.Types.ObjectId, ref: "Doctor" },
     appointmentStatus: { type: Boolean, default: "false" },
     appointmentView: { type: Boolean, default: "false" },
     updated: Date
