@@ -417,6 +417,7 @@ function basicDetails(patient) {
     address,
     city,
     imageUrl,
+    reports,
     role,
     created,
     updated,
