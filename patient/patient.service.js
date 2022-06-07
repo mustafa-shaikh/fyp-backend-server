@@ -246,6 +246,26 @@ const reports = [
     upperRange: "15",
     lowerRange: "5",
   }
+  ,
+  {
+    date: "2022-03-02",
+    testName: "CALCIUM",
+    testResult: "11",
+    normalRange0: "8.6",
+    normalRange1: "10.2",
+    upperRange: "15",
+    lowerRange: "5",
+  }
+  ,
+  {
+    date: "2022-03-03",
+    testName: "CALCIUM",
+    testResult: "9",
+    normalRange0: "8.6",
+    normalRange1: "10.2",
+    upperRange: "15",
+    lowerRange: "5",
+  }
 ]
 
 
@@ -258,6 +278,12 @@ async function sendReport(id, params) {
   }
   else if (params == "report2.pdf") {
     res = reports[1];
+  }
+  else if (params == "report3.pdf") {
+    res = reports[3];
+  }
+  else if (params == "report4.pdf") {
+    res = reports[3];
   }
   // else {
   //   res = { error: "Error Reading File" }
